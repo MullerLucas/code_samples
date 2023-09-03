@@ -19,11 +19,19 @@
     - The flow field is divided into multiple segments of which each segment contains a grid of smaller cells
     - In this class, a job is created that runs parallely on each segment and determines wheather the cells in that segment are blocked or passable
 
----
+
 
 ## goeff
 
+### Info
+
 - https://gitlab.com/helloki/goeff
+- Browser-Game utalizing openAi's Chat-GPT api
+- One human player plays against "Goeff Jipedy" in a game of "Split or Steal"
+- The goal is to win as much money as possible by manipulating the AI
+- Written complete in Rust using `hellmut`
+
+### Files
 
 - `chat.rs`
     - View, responsible for rendering the chat page
@@ -47,7 +55,6 @@
 - `stack_array.hpp`
     - Stack (array backed)
 
----
 
 ## hellengine
 
@@ -57,9 +64,9 @@
 - https://github.com/MullerLucas/hellengine
 - https://gitlab.com/helloki/nocoru
 - https://github.com/MullerLucas/nocoru
-- The `hellmut` and `hellengine` are currently being merged into one project.
-- Personal project written in Rust.
-- Vulkan is used as the graphics API.
+- The `hellmut` and `hellengine` are currently being merged into one project
+- Simple game-engine written in Rust
+- Vulkan is used as the graphics API
 
 
 ### Files
@@ -80,7 +87,7 @@
     - Crate: hell_math
     - Vector math library based on macros
 
----
+
 
 ## hellengine_zig
 
@@ -88,6 +95,9 @@
 
 - https://gitlab.com/helloki/hellengine_zig
 - https://github.com/MullerLucas/hellengine_zig
+- Rewrite of `hellengine` in Zig
+
+
 
 ### Files
 
@@ -99,7 +109,8 @@
     - The renderer has been split into a generic frontend and an api specific backend - This is the backend for Vulkan
     - Functions for creating and generic shaders
 
----
+
+
 
 ## hellmut
 
@@ -115,5 +126,10 @@
 
 - `context.rs`
     - Reactive system, responsible for creating and running effects and signals
+<<<<<<< HEAD
 - `element.rs`
     - Wrapper for working with html elements
+=======
+- element.rs
+    - Wrapper for working with html elements
+>>>>>>> refs/remotes/origin/main
