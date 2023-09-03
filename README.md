@@ -36,7 +36,7 @@
 - `chat.rs`
     - View, responsible for rendering the chat page
 
----
+
 
 ## hector
 
@@ -56,6 +56,7 @@
     - Stack (array backed)
 
 
+
 ## hellengine
 
 ### Info
@@ -67,7 +68,6 @@
 - The `hellmut` and `hellengine` are currently being merged into one project
 - Simple game-engine written in Rust
 - Vulkan is used as the graphics API
-
 
 ### Files
 
@@ -97,8 +97,6 @@
 - https://github.com/MullerLucas/hellengine_zig
 - Rewrite of `hellengine` in Zig
 
-
-
 ### Files
 
 - `obj_file.zig`
@@ -108,7 +106,6 @@
 - `vulkan_backend.zig`
     - The renderer has been split into a generic frontend and an api specific backend - This is the backend for Vulkan
     - Functions for creating and generic shaders
-
 
 
 
@@ -126,10 +123,5 @@
 
 - `context.rs`
     - Reactive system, responsible for creating and running effects and signals
-<<<<<<< HEAD
 - `element.rs`
     - Wrapper for working with html elements
-=======
-- element.rs
-    - Wrapper for working with html elements
->>>>>>> refs/remotes/origin/main
