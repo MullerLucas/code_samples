@@ -23,11 +23,14 @@ public:
     StackArray(T data[CAPACITY], std::size_t len);
     StackArray(const StackArray& other);
 
+    StackArray<T, CAPACITY>& operator=(const StackArray<T, CAPACITY>& other);
+
     std::size_t get_len();
     bool is_empty() const;
     bool is_full() const;
 
-    void push(T value);
+    void push(const T& value);
+    void push(T&& value);
     T pop();
     const T& peek() const;
 
@@ -53,6 +56,16 @@ StackArray<T, CAPACITY>::StackArray(const StackArray& other)
     this->len = other.len;
 }
 
+// -----
+
+template<typename T, std::size_t CAPACITY>
+StackArray<T, CAPACITY>& StackArray<T, CAPACITY>::operator=(const StackArray<T, CAPACITY>& other)
+{
+    return *this = StackArray(other);
+}
+
+// -----
+
 template<typename T, std::size_t CAPACITY>
 std::size_t StackArray<T, CAPACITY>::get_len()
 {
@@ -71,8 +84,17 @@ bool StackArray<T, CAPACITY>::is_full() const
     return this->len == CAPACITY;
 }
 
+// -----
+
 template<typename T, std::size_t CAPACITY>
-void StackArray<T, CAPACITY>::push(T value)
+void StackArray<T, CAPACITY>::push(const T& value)
+{
+    T copy = value;
+    this->push(std::move(copy));
+}
+
+template<typename T, std::size_t CAPACITY>
+void StackArray<T, CAPACITY>::push(T&& value)
 {
     assert(!this->is_full());
 
@@ -96,6 +118,8 @@ const T& StackArray<T, CAPACITY>::peek() const
 
     return this->data[this->len - 1];
 }
+
+// -----
 
 template<typename T, std::size_t CAPACITY>
 void StackArray<T, CAPACITY>::print() const

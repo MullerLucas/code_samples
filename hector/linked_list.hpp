@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <iostream>
 #include <ostream>
+#include <utility>
 
 namespace hell {
 
@@ -30,19 +31,23 @@ private:
     LinkedListNode<T>* tail;
     std::size_t len;
 
-    LinkedListNode<T>* find_at(std::size_t idx) const;
-
 public:
     LinkedList();
     LinkedList(const LinkedList& other);
     LinkedList(LinkedList&& other);
     ~LinkedList();
 
+    LinkedList<T>& operator=(const LinkedList<T>& other);
+    LinkedList<T>& operator=(LinkedList<T>&& other);
+
     std::size_t get_len() const;
 
-    void push_head(T value);
-    void push_tail(T value);
-    void insert_at(std::size_t idx, T value);
+    void push_head(const T& value);
+    void push_head(T&& value);
+    void push_tail(const T& value);
+    void push_tail(T&& value);
+    void insert_at(std::size_t idx, const T& value);
+    void insert_at(std::size_t idx, T&& value);
 
     T pop_head();
     T pop_tail();
@@ -53,6 +58,11 @@ public:
     const T& peek_at(std::size_t idx) const;
 
     void print() const;
+
+private:
+    LinkedListNode<T>* find_at(std::size_t idx) const;
+    void delete_all_nodes();
+
 };
 
 // ----------------------------------------------
@@ -69,33 +79,45 @@ LinkedList<T>::LinkedList(const LinkedList<T>& other)
     auto other_node = other.head;
     while (other_node != nullptr)
     {
-        this->push_tail(other_node->value);
+        this->push_tail(std::move(other_node->value));
         other_node = other_node->next;
     }
 }
 
 template<typename T>
 LinkedList<T>::LinkedList(LinkedList<T>&& other)
-    : head(nullptr), tail(nullptr), len(other.len)
-{
-    this->head = other.head;
-    this->tail = other.tail;
-    this->len  = other.len;
-
-    other.head = nullptr;
-    other.tail = nullptr;
-    other.len  = 0;
-}
+    : head(std::exchange(other.head, nullptr))
+    , tail(std::exchange(other.tail, nullptr))
+    , len (std::exchange(other.len,  0))
+{ }
 
 template<typename T>
 LinkedList<T>::~LinkedList()
 {
-    auto node = this->head;
-    while (node != nullptr) {
-        auto next = node->next;
-        delete node;
-        node = next;
+    this->delete_all_nodes();
+}
+
+// -----
+
+template<typename T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other)
+{
+    return *this = LinkedList<T>(other);
+}
+
+template<typename T>
+LinkedList<T>& LinkedList<T>::operator=(LinkedList<T>&& other)
+{
+    if (this != &other)
+    {
+        this->delete_all_nodes();
+        this->head = other.head;
+        this->len  = other.len;
+        other.head = nullptr;
+        other.len  = 0;
     }
+
+    return *this;
 }
 
 // -----
@@ -106,8 +128,17 @@ std::size_t LinkedList<T>::get_len() const
     return this->len;
 }
 
+// -----
+
 template<typename T>
-void LinkedList<T>::push_head(T value)
+void LinkedList<T>::push_head(const T& value)
+{
+    T copy = value;
+    this->push_head(std::move(copy));
+}
+
+template<typename T>
+void LinkedList<T>::push_head(T&& value)
 {
     auto new_node = new LinkedListNode<T>;
     new_node->value = value;
@@ -124,7 +155,14 @@ void LinkedList<T>::push_head(T value)
 }
 
 template<typename T>
-void LinkedList<T>::push_tail(T value)
+void LinkedList<T>::push_tail(const T& value)
+{
+    T copy = value;
+    this->push_tail(std::move(copy));
+}
+
+template<typename T>
+void LinkedList<T>::push_tail(T&& value)
 {
     auto new_node = new LinkedListNode<T>;
     new_node->value = value;
@@ -141,7 +179,13 @@ void LinkedList<T>::push_tail(T value)
 }
 
 template<typename T>
-void LinkedList<T>::insert_at(std::size_t idx, T value)
+void LinkedList<T>::insert_at(std::size_t idx, const T& value)
+{
+    T copy = value;
+}
+
+template<typename T>
+void LinkedList<T>::insert_at(std::size_t idx, T&& value)
 {
     assert(idx >= 0 && idx <= this->len);
 
@@ -288,6 +332,17 @@ LinkedListNode<T>* LinkedList<T>::find_at(std::size_t idx) const
     }
 
     return node;
+}
+
+template<typename T>
+void LinkedList<T>::delete_all_nodes()
+{
+    auto node = this->head;
+    while (node != nullptr) {
+        auto next = node->next;
+        delete node;
+        node = next;
+    }
 }
 
 // ----------------------------------------------

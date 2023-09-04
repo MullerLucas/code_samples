@@ -4,6 +4,8 @@
 #include <functional>
 #include <ostream>
 #include <queue>
+#include <vector>
+
 
 namespace hell
 {
@@ -36,11 +38,15 @@ private:
 
 public:
     BSTree();
-    BSTree(const BSTree& rhs);
-    BSTree(BSTree&& rhs);
+    BSTree(const BSTree& other);
+    BSTree(BSTree&& other);
     ~BSTree();
 
-    void insert(T value);
+    BSTree<T>& operator=(const BSTree<T>& other);
+    BSTree<T>& operator=(BSTree<T>&& other);
+
+    void insert(const T& value);
+    void insert(T&& value);
     void remove(const T& value);
 
     void rotate_left();
@@ -74,23 +80,21 @@ BSTree<T>::BSTree()
 {}
 
 template<typename T>
-BSTree<T>::BSTree(const BSTree<T>& rhs)
+BSTree<T>::BSTree(const BSTree<T>& other)
     : root(nullptr)
 {
-    if (rhs.root == nullptr)
+    if (other.root == nullptr)
         return;
 
-    rhs.traverse_level_order([this] (T value) mutable {
+    other.traverse_level_order([this] (T value) mutable {
         this->insert(value);
     });
 }
 
 template<typename T>
-BSTree<T>::BSTree(BSTree<T>&& rhs)
-    : root(rhs.root)
-{
-    rhs.root = nullptr;
-}
+BSTree<T>::BSTree(BSTree<T>&& other)
+    : root(std::exchange(other.root, nullptr))
+{ }
 
 template<typename T>
 BSTree<T>::~BSTree()
@@ -108,7 +112,34 @@ BSTree<T>::~BSTree()
 // -----
 
 template<typename T>
-void BSTree<T>::insert(T value)
+BSTree<T>& BSTree<T>::operator=(const BSTree<T>& other)
+{
+    return *this = BSTree<T>(other);
+}
+
+template<typename T>
+BSTree<T>& BSTree<T>::operator=(BSTree<T>&& other)
+{
+    if (this != &other)
+    {
+        this->root = other.root;
+        other.root = nullptr;
+    }
+
+    return *this;
+}
+
+// -----
+
+template<typename T>
+void BSTree<T>::insert(const T& value)
+{
+    T copy = value;
+    this->insert(std::move(copy));
+}
+
+template<typename T>
+void BSTree<T>::insert(T&& value)
 {
     auto new_node = new BSTreeNode<T> {};
     new_node->value = value;
